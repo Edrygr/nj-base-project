@@ -1,12 +1,10 @@
 const express = require("express");
-const cors = require('cors');
 const utils = require('../utils/utils.cjs');
 const jwt = require('jsonwebtoken');
-
 const Register = require('../model/register_user.cjs');
+const loginResponse = require('../model/login_response.cjs');
 const Login = require('../model/login.cjs');
-const LoginResponse = require('../model/login_response.cjs');
-
+const userRepo = require('../repository/user_repo.cjs');
 
 const router = express.Router();
 router.post("/signup", (req, res) => {
@@ -16,41 +14,39 @@ router.post("/signup", (req, res) => {
         return res.status(400).send("All inputs are required");
     }
 
-    register.password = utils.hashText(process.env.TOKEN_KEY, register.password)
+    let salt = utils.getRandomSalt()
+    register.password = utils.hashText(salt, register.password)
 
-    const token = jwt.sign(
-        { user: register.user },
-        process.env.TOKEN_KEY,
-        {
-            expiresIn: process.env.TOKEN_EXP,
-        }
-    );
-
-    register.jwt = token
-
-
-    res.status(200).json(register)
+    userRepo.insertUsers(register.user, register.password,salt).then( data =>{
+        return res.status(200).json()
+    }).catch(err =>{
+        console.info(err)
+        return res.status(412).json("Error");
+    })
 })
 
 router.post("/login", (req, res) => {
-    let login = new LoginResponse(req.body)
+    let login = new Login(req.body)
 
     if (!(login.user && login.password)) {
         return res.status(400).send("All inputs are required");
     }
 
-    const token = jwt.sign(
-        { user: login.user },
-        process.env.TOKEN_KEY,
-        {
-            expiresIn: process.env.TOKEN_EXP,
-        }
-    );
-
-    res.status(200).json({
-        jwt: token,
-        user: login.user
+    userRepo.findByName(login.user).then(value => {
+        return res.status(200).json(value)
+    }).catch(err =>{
+        console.info(err)
+        return res.status(403).json("Error");
     })
+
+    const token = jwt.sign(
+            { user: login.user },
+            process.env.TOKEN_KEY,
+            {
+                expiresIn: process.env.TOKEN_EXP,
+            }
+            );
+
 })
 
 module.exports = router

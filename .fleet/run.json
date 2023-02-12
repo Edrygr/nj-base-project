@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "Start Dev",
+            "program": "npm",
+            "args": [
+                "run",
+                "start-dev"
+            ]
+        },
+        {
+            "type": "command",
+            "name": "Start Prod",
+            "program": "npm",
+            "args": [
+                "run",
+                "start-prod"
+            ]
+        }
+    ]
+}

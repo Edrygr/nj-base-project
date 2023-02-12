@@ -10,6 +10,7 @@ Base projec to quick start your microservice develop with node js
 - Auth with Jwt validation
 - Json mapper from request to a model
 - Hash sha256 password encode for passwords
+- MariaDb integration
 
 ## Installation
 
@@ -72,3 +73,25 @@ This project is prepare to run with diferent environment files, right now has by
 | :--------- | :------- | :--------------------------- |
 | `user`     | `string` | **Required**. Your user name |
 | `password` | `string` | **Required**. Your password  |
+
+## Database
+
+### Features
+
+Added integration with MariaD
+
+#### Environment Variables
+
+- DB_HOST = localhost
+- DB_PORT = 3306
+- DB_USER = root
+- DB_PASSWORD = password
+- DB_NAME = db-name
+- DB_POOL_LIMIT_CONNECTONS = 10
+
+#### Start up SQL scripts
+in root folder can found a file named base_database.sql in it you can put all start up scrit that will run on the aplication start.
+
+- Not suported line breaks
+
+
