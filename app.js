@@ -3,6 +3,8 @@ const pool = require('./src/db/mariadb_connection.cjs');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const winston = require('winston');
+const expressWinston = require('express-winston');
 
 const app = express();
 app.use(express.json());
@@ -12,7 +14,21 @@ module.exports = app
 const routerUser = require('./src/rest/user_rest')
 const routerAuth = require('./src/rest/auth')
 
-
+//loggin with Winston
+app.use(expressWinston.logger({
+    transports: [
+        new winston.transports.Console()
+    ],
+    format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.json()
+            ),
+    meta: true,
+    msg: "HTTP  ",
+    expressFormat: true,
+    colorize: true,
+    ignoreRoute: function (req, res) { return false; }
+}));
 app.use((req, res, next) => {
 	const excludePaths = process.env.EXCLUDE_SECURITY_PATHS.split(',')
 	if (!excludePaths.includes(req.path)) {
@@ -31,10 +47,23 @@ app.use((req, res, next) => {
 
 	next();
 })
-
 app.use('/user', routerUser)
 app.use('/auth', routerAuth)
 app.use(cors)
+app.use(expressWinston.logger({
+    transports: [
+        new winston.transports.Console()
+    ],
+    format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.json()
+            ),
+    meta: false,
+    msg: "HTTP  ",
+    expressFormat: true,
+    colorize: false,
+    ignoreRoute: function (req, res) { return false; }
+}));
 
 //end required files for rest api services
 

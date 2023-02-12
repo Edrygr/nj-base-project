@@ -17,6 +17,15 @@
                 "run",
                 "start-prod"
             ]
+        },
+        {
+            "type": "command",
+            "name": "Start Debug",
+            "program": "npm",
+            "args": [
+                "run",
+                "start-debug"
+            ]
         }
     ]
 }
