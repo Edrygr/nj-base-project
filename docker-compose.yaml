@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  mariadb:
+    image: mariadb:10.9-rc
+    restart: always
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: qB@cyRtmX&
+      MYSQL_DATABASE: nj-base-project
+    volumes:
+      - ${PWD}/mybb:/var/www/html
+networks:
+  webnet:
